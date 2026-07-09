@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SeniorGuard</string>
+    <string name="guardian_running">守护中</string>
+    <string name="all_ok">手机状态良好</string>
+</resources>

@@ -24,17 +24,17 @@ class GuardianService : LifecycleService() {
         installMonitor = InstallMonitor(this, repairEngine)
         callSmsMonitor = CallSmsMonitor(this, repairEngine)
         stateMonitor.start(scope)
-        installMonitor.register()
-        callSmsMonitor.register()
+        try { installMonitor.register() } catch(e:Exception){}
+        try { callSmsMonitor.register() } catch(e:Exception){}
         scope.launch { repairEngine.fullScan() }
     }
-    override fun onDestroy() { scope.cancel(); installMonitor.unregister(); callSmsMonitor.unregister(); super.onDestroy() }
+    override fun onDestroy() { scope.cancel(); try{installMonitor.unregister()}catch(_:Exception){}; try{callSmsMonitor.unregister()}catch(_:Exception){}; super.onDestroy() }
     override fun onBind(intent: Intent): IBinder? = null
     private fun createNotificationChannel() {
         getSystemService(NotificationManager::class.java).createNotificationChannel(
-            NotificationChannel("guardian", "守护服务", NotificationManager.IMPORTANCE_LOW))
+            NotificationChannel("guardian","守护服务",NotificationManager.IMPORTANCE_LOW))
     }
-    private fun buildNotification() = Notification.Builder(this, "guardian")
+    private fun buildNotification() = Notification.Builder(this,"guardian")
         .setContentTitle("SeniorGuard").setContentText("智能守护运行中")
         .setSmallIcon(android.R.drawable.ic_lock_idle_lock).build()
 }

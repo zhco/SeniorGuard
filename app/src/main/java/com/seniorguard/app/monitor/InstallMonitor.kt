@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import com.seniorguard.app.engine.RepairEngine
+import kotlinx.coroutines.*
 class InstallMonitor(private val context: Context, private val engine: RepairEngine) {
     private val receiver = PackageReceiver()
     fun register() {
@@ -11,10 +12,10 @@ class InstallMonitor(private val context: Context, private val engine: RepairEng
         context.registerReceiver(receiver, filter)
     }
     fun unregister() { try { context.unregisterReceiver(receiver) } catch (_: Exception) {} }
-    companion object {
-        fun handlePackageEvent(context: Context, intent: Intent, engine: RepairEngine) {
+    inner class PackageReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == Intent.ACTION_PACKAGE_ADDED) {
-                kotlinx.coroutines.runBlocking { engine.fullScan() }
+                CoroutineScope(Dispatchers.IO).launch { engine.fullScan() }
             }
         }
     }

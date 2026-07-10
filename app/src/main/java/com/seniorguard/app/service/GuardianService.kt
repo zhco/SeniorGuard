@@ -29,7 +29,7 @@ class GuardianService : LifecycleService() {
         scope.launch { repairEngine.fullScan() }
     }
     override fun onDestroy() { scope.cancel(); installMonitor.unregister(); callSmsMonitor.unregister(); super.onDestroy() }
-    override fun onBind(intent: Intent?): IBinder? = null
+    override fun onBind(intent: Intent): IBinder? = null
     private fun createNotificationChannel() {
         getSystemService(NotificationManager::class.java).createNotificationChannel(
             NotificationChannel("guardian", "守护服务", NotificationManager.IMPORTANCE_LOW))
